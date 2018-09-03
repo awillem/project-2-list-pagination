@@ -10,7 +10,17 @@ const searchInput = createElement('input');
 const searchButton = createElement('button');
 const studentUl = document.querySelector('ul');
 const studentLi = studentUl.children;
+const studentList = [];
+for ( let i = 0; i < studentLi.length; i +=1 ) {
+  studentList.push(studentUl.children[i])
+}
 
+
+//call the createPag function to set up the pagination for the first time
+createPag(count());
+const pagDiv = document.querySelector('.pagination');
+const pagUl = pagDiv.children;
+const pagLi = pagUl[0].children;
 
 //create Search field and button
 searchDiv.className = 'student-search';
@@ -22,63 +32,51 @@ headerDiv.appendChild(searchDiv);
 searchDiv.appendChild(searchInput);
 searchDiv.appendChild(searchButton);
 
+function event (e,typeInCaps) {
+  if (e.target.tagName === typeInCaps) {
+    const searchValue = searchInput.value;
+    console.log(searchValue);
+    for (let i = 0; i < studentList.length; i +=1) {
+      studentList[i].style.display = 'none';
+    }
+    studentList.length = 0;
+    for (let i = 0; i < pagLi.length; i += 1) {
+        pagLi[i].style.display = 'inline';
+        pagLi[i].firstChild.className = "";
+      }
+      pagLi[0].firstChild.className = "active";
+
+    if (searchValue !== '') {
+      for (let j = 0; j < studentLi.length; j +=1 ) {
+        const studentName = studentLi[j].querySelector('h3').textContent;
+        if (studentName.includes(searchValue)) {
+          studentList.push(studentLi[j]);
+        }
+      }
+      let counter = count();
+      counter = Math.ceil(count()/10);
+      for (let i = 0; i < pagLi.length; i += 1) {
+        if (i > (counter - 1)){
+        pagLi[i].style.display = 'none';
+        }
+      }
+    } else {
+       for (let i = 0; i < studentLi.length; i += 1) {
+         studentList.push(studentLi[i]);
+
+       }
+    } //closes else
+  } // closes if button
+  setPag();
+}
 
 searchDiv.addEventListener('click', (e) => {
-  if (e.target.tagName === 'BUTTON') {
-      const search = searchInput.value;
-      for ( let i = 0; i < studentLi.length; i +=1) {
-        const studentName = studentLi[i].querySelector('h3').textContent;
-        const holder = []
-        if (studentName.includes(search)) {
-          studentLi[i].style.display = 'list-item';
-        } else {
-          studentLi[i].style.display = 'none';
-        }
-      }
+  event(e, 'BUTTON');
+});//closes event listener
 
-    // function countFilter () {
-      let count = 0;
-      for ( let i = 0; i < studentLi.length; i +=1) {
-        if (studentLi[i].style.display === 'list-item') {
-          count += 1;
-        }
-        console.log(count);
-
-      //}
-      count = Math.ceil(count / 10);
-
-      for (let i = 0; i < pagLi.length; i += 1) {
-        pagLi[i].style.display = 'none';
-        if (i < count) {
-          pagLi[i].style.display = 'list-item';
-        } else {
-          pagLi[i].style.display = 'none';
-        }
-      }
-      pagLi[0].className = "active";
-
-    }
-
-  }
+searchDiv.addEventListener('keyup', (e) => {
+  event(e, 'INPUT');
 });
-
-// searchDiv.addEventListener('keypress', (e) => {
-//    if (e.target.tagName === 'BUTTON') {
-//     const search = searchInput.value;
-//     for ( let i = 0; i < studentLi.length; i +=1) {
-//       const studentName = studentLi[i].querySelector('h3');
-//       console.log(studentName);
-//     }
-//   }
-// });
-
-// searchDiv.addEventListener('keyup', () => {
-//   const search = searchInput.value;
-//   console.log(search);
-// });
-
-
-
 
 //function to create elementes
 function createElement(element) {
@@ -94,21 +92,14 @@ appends them together, then calls the setPag function, which hides list items so
 */
 function count () {
   let count = 0;
-  for (let i = 0; i < studentLi.length; i += 1){
+  for (let i = 0; i < studentList.length; i += 1){
     count += 1;
   }
   return count;
 }
 
 function createPag (count) {
-  // let count = 0;
-  // for (let i = 0; i < studentLi.length; i +=1){
-  //   //if (studentLi[i].style.display === "") {
-  //   count += 1;
-  //   //}
-  // }
-  //let count = count();
-  count = Math.ceil(count / 10);
+    count = Math.ceil(count / 10);
   if (count > 1) {
     const div = createElement('div');
     const ul = createElement('ul');
@@ -129,13 +120,8 @@ function createPag (count) {
     setPag();
   }
 }
-//call the createPag function to set up the pagination for the first time
 
-createPag(count());
-//declared here, because these elements don't exist until after createPag is called.
-const pagDiv = document.querySelector('.pagination');
-const pagUl = pagDiv.children;
-const pagLi = pagUl[0].children;
+
 
 /*
 This function determines what student list items will show based on the active pagination link.
@@ -155,11 +141,11 @@ function setPag () {
       const active = parseInt(pagLi[i].firstChild.textContent);
       const activeUpper = (active * 10) - 1;
       const activeLower = activeUpper - 9;
-      for (let j = 0; j < studentLi.length; j += 1) {
+      for (let j = 0; j < studentList.length; j += 1) {
         if (j >= activeLower && j <= activeUpper) {
-          studentLi[j].style.display = 'list-item';
+          studentList[j].style.display = 'list-item';
         } else {
-           studentLi[j].style.display = "none";
+           studentList[j].style.display = "none";
         }
       }
     }
@@ -181,3 +167,9 @@ pagUl[0].addEventListener('click', (e) => {
     setPag();
   }
 });
+
+
+
+for (let i = 0; i < studentLi.length; i += 1) {
+  console.log(studentLi[i].querySelector('h3').textContent);
+}
