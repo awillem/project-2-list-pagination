@@ -14,7 +14,7 @@ const studentLi = studentUl.children;
 //this will update in functions below for the search bar
 const studentList = [];
 for ( let i = 0; i < studentLi.length; i +=1 ) {
-  studentList.push(studentUl.children[i])
+  studentList.push(studentUl.children[i]);
 }
 
 
@@ -68,6 +68,11 @@ function event (e,typeInCaps) {
         }
       }
       let counter = count();
+      if (counter === 0) {
+        const message = createElement('h3');
+        message.textContent = 'No Results Found';
+        pagDiv.appendChild(message);
+      }
       counter = Math.ceil(count()/10);
       for (let i = 0; i < pagLi.length; i += 1) {
         if (i > (counter - 1)){
