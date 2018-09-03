@@ -18,12 +18,19 @@ for ( let i = 0; i < studentLi.length; i +=1 ) {
 }
 
 
+
 //call the createPag function to set up the pagination for the first time
 createPag(count());
 
 const pagDiv = document.querySelector('.pagination');
 const pagUl = pagDiv.children;
 const pagLi = pagUl[0].children;
+
+//create no response message, but set display to None.  To be used in search event function
+const message = createElement('h3');
+message.textContent = 'No Results Found';
+pagDiv.appendChild(message);
+message.style.display = "none";
 
 //create Search field and button
 searchDiv.className = 'student-search';
@@ -60,6 +67,8 @@ function event (e,typeInCaps) {
       }
       pagLi[0].firstChild.className = "active";
 
+      message.style.display = 'none';
+
     if (searchValue !== '') {
       for (let j = 0; j < studentLi.length; j +=1 ) {
         const studentName = studentLi[j].querySelector('h3').textContent;
@@ -69,9 +78,7 @@ function event (e,typeInCaps) {
       }
       let counter = count();
       if (counter === 0) {
-        const message = createElement('h3');
-        message.textContent = 'No Results Found';
-        pagDiv.appendChild(message);
+        message.style.display = "block";
       }
       counter = Math.ceil(count()/10);
       for (let i = 0; i < pagLi.length; i += 1) {
