@@ -10,6 +10,8 @@ const searchInput = createElement('input');
 const searchButton = createElement('button');
 const studentUl = document.querySelector('ul');
 const studentLi = studentUl.children;
+//studentList will initially hold array of all student list items.
+//this will update in functions below for the search bar
 const studentList = [];
 for ( let i = 0; i < studentLi.length; i +=1 ) {
   studentList.push(studentUl.children[i])
@@ -18,6 +20,7 @@ for ( let i = 0; i < studentLi.length; i +=1 ) {
 
 //call the createPag function to set up the pagination for the first time
 createPag(count());
+
 const pagDiv = document.querySelector('.pagination');
 const pagUl = pagDiv.children;
 const pagLi = pagUl[0].children;
@@ -32,10 +35,21 @@ headerDiv.appendChild(searchDiv);
 searchDiv.appendChild(searchInput);
 searchDiv.appendChild(searchButton);
 
+/*
+  This function is used in the addEventListener to set up functionality for the search field
+  the typeInCaps parameter is for selecting either INPUT or button
+  at the beginning of the function, it grabs the text from the search field, changes the display of all student list itmes to none,
+  removes all items from the studentList array, and resets the pagination links to be visible, and sets the first one with the active class.
+
+  If the searchValue has text, it loops through studentLi and looks for matching text.  If matching, it pushes that studentLi to the studentList array.
+  then, using a counter of those items divided by 10, it sets how many pagination links are visible.
+  If the searchValue has no text, it pushes all studentLi into the studentList array.
+
+  Finally, it calls the setPag() function.
+*/
 function event (e,typeInCaps) {
   if (e.target.tagName === typeInCaps) {
     const searchValue = searchInput.value;
-    console.log(searchValue);
     for (let i = 0; i < studentList.length; i +=1) {
       studentList[i].style.display = 'none';
     }
@@ -70,10 +84,12 @@ function event (e,typeInCaps) {
   setPag();
 }
 
+//Listens for click on search button and runs event function
 searchDiv.addEventListener('click', (e) => {
   event(e, 'BUTTON');
 });//closes event listener
 
+//listens for any typing on search input and runs event function
 searchDiv.addEventListener('keyup', (e) => {
   event(e, 'INPUT');
 });
@@ -83,13 +99,9 @@ function createElement(element) {
   return document.createElement(element);
 }
 
-/*
-This function creates the pagination links on the page.
-It loops through the list of student names, adding 1 to the count each time.
-Divides that count by 10, and rounds up for total links needed
-Uses a loops, starting at 1 not 0, based on that count to create a LI and an A, setting class to active for the first A only.
-appends them together, then calls the setPag function, which hides list items so only 10 show.
-*/
+
+//This function creates a count of items in the studentList array and returns that count
+
 function count () {
   let count = 0;
   for (let i = 0; i < studentList.length; i += 1){
@@ -97,6 +109,13 @@ function count () {
   }
   return count;
 }
+
+/*
+This function creates the pagination links on the page.
+Divides that count by 10, and rounds up for total links needed
+Uses a loop, starting at 1 not 0, based on that count to create a LI and an A, setting class to active for the first A only.
+appends them together, then calls the setPag function, which hides list items so only 10 show.
+*/
 
 function createPag (count) {
     count = Math.ceil(count / 10);
@@ -167,9 +186,3 @@ pagUl[0].addEventListener('click', (e) => {
     setPag();
   }
 });
-
-
-
-for (let i = 0; i < studentLi.length; i += 1) {
-  console.log(studentLi[i].querySelector('h3').textContent);
-}
